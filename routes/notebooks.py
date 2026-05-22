@@ -11,36 +11,37 @@ from werkzeug.utils import secure_filename
 from database.models import db
 from database.models import Notebook
 
-import os
 import pdfkit
-import win32com.client
-import pythoncom
+import os
 
 notebooks_bp = Blueprint(
     'notebooks',
     __name__
 )
 
-# =====================================================
-# NOTEBOOKS
-# =====================================================
+UPLOAD_FOLDER = 'uploads'
+
+# =========================================================
+# LISTAR NOTEBOOKS
+# =========================================================
 
 @notebooks_bp.route('/notebooks')
 def notebooks():
 
+    if 'usuario' not in session:
+
+        return redirect('/')
+
     notebooks = Notebook.query.all()
 
     return render_template(
-
         'notebooks.html',
-
         notebooks=notebooks
-
     )
 
-# =====================================================
+# =========================================================
 # CADASTRAR NOTEBOOK
-# =====================================================
+# =========================================================
 
 @notebooks_bp.route(
     '/cadastrar_notebook',
@@ -48,73 +49,60 @@ def notebooks():
 )
 def cadastrar_notebook():
 
+    termo = request.files['termo']
+
     nome_arquivo = ''
 
     # =====================================================
     # UPLOAD MANUAL
     # =====================================================
 
-    if 'termo' in request.files:
+    if termo.filename != '':
 
-        arquivo = request.files['termo']
-
-        if arquivo.filename != '':
-
-            nome_arquivo = secure_filename(
-
-                arquivo.filename
-
-            )
-
-            caminho = os.path.join(
-
-                'uploads',
-
-                nome_arquivo
-
-            )
-
-            arquivo.save(caminho)
-
-    # =====================================================
-    # GERAR TERMO
-    # =====================================================
-
-    if request.form.get('gerar_termo') == 'sim':
-
-        nome_arquivo = (
-
-            f'TERMO_{request.form["colaborador"]}.pdf'
-
+        nome_arquivo = secure_filename(
+            termo.filename
         )
+
+        termo.save(
+            os.path.join(
+                UPLOAD_FOLDER,
+                nome_arquivo
+            )
+        )
+
+    # =====================================================
+    # GERAR TERMO AUTOMÁTICO
+    # =====================================================
+
+    elif request.form.get('gerar_termo') == 'sim':
 
         html = render_template(
 
-        'termo.html',
+            'termo.html',
 
-        colaborador=request.form['colaborador'],
+            colaborador=request.form['colaborador'],
 
-        cpf=request.form['cpf'],
+            cpf=request.form['cpf'],
 
-        area=request.form['area'],
+            area=request.form['area'],
 
-        tecnico=session['nome'],
+            matricula=request.form['matricula'],
 
-        matricula=request.form['matricula'],
+            notebook=request.form['notebook'],
 
-        notebook=request.form['notebook'],
+            marca=request.form['marca'],
 
-        marca=request.form['marca'],
+            modelo=request.form['modelo'],
 
-        modelo=request.form['modelo'],
+            processador=request.form['processador'],
 
-        processador=request.form['processador'],
+            serial=request.form['serial'],
 
-        serial=request.form['serial'],
+            valor=request.form['valor'],
 
-        valor=request.form['valor'],
+            tecnico=session['nome'],
 
-        data=request.form['data'].split('-')[2] + '/' + request.form['data'].split('-')[1] + '/' + request.form['data'].split('-')[0]
+            data=request.form['data'].split('-')[2] + '/' + request.form['data'].split('-')[1] + '/' + request.form['data'].split('-')[0]
 
         )
 
@@ -126,24 +114,30 @@ def cadastrar_notebook():
 
         options = {
 
-            'enable-local-file-access': None
+            'enable-local-file-access': ''
 
         }
+
+        nome_arquivo = f'TERMO_{request.form["colaborador"]}.pdf'
+
+        pdf_path = os.path.join(
+
+            UPLOAD_FOLDER,
+            nome_arquivo
+
+        )
 
         pdfkit.from_string(
 
             html,
-
-            f'uploads/{nome_arquivo}',
-
+            pdf_path,
             configuration=config,
-
             options=options
 
         )
 
     # =====================================================
-    # SALVAR NO BANCO
+    # SALVAR BANCO
     # =====================================================
 
     novo = Notebook(
@@ -176,104 +170,28 @@ def cadastrar_notebook():
 
     db.session.commit()
 
-    # =====================================================
-    # OUTLOOK EMAIL
-    # =====================================================
-
-    if nome_arquivo != '':
-
-        pythoncom.CoInitialize()
-
-        outlook = win32com.client.Dispatch(
-
-            'outlook.application'
-
-        )
-
-        mail = outlook.CreateItem(0)
-
-        mail.To = request.form['email_destino']
-
-        mail.Subject = (
-
-            'Termo de Entrega de Equipamento'
-
-        )
-
-        mail.HTMLBody = f"""
-
-        <p>Olá,</p>
-
-        <p>
-
-        Segue em anexo o termo de entrega do equipamento disponibilizado.
-
-        </p>
-
-        <p>
-
-        <b>Equipamento:</b>
-        {request.form['notebook']}
-
-        <br>
-
-        <b>Serial:</b>
-        {request.form['serial']}
-
-        </p>
-
-        <p>
-
-        Por gentileza, valide as informações.
-        Estando tudo correto, responda este e-mail
-        com um “de acordo”.
-
-        Em caso de divergências,
-        entre em contato conosco para realização
-        dos ajustes necessários.
-
-        </p>
-
-        <p>
-
-        Atenciosamente,
-        <br>
-        TI - Allied
-
-        </p>
-
-        """
-
-        pdf_path = os.path.abspath(
-
-            f'uploads/{nome_arquivo}'
-
-        )
-
-        mail.Attachments.Add(pdf_path)
-
-        mail.Display()
-
     return redirect('/notebooks')
 
-# =====================================================
+# =========================================================
 # EXCLUIR NOTEBOOK
-# =====================================================
+# =========================================================
 
 @notebooks_bp.route('/excluir_notebook/<int:id>')
 def excluir_notebook(id):
 
-    notebook = Notebook.query.get_or_404(id)
+    notebook = Notebook.query.get(id)
 
-    db.session.delete(notebook)
+    if notebook:
 
-    db.session.commit()
+        db.session.delete(notebook)
+
+        db.session.commit()
 
     return redirect('/notebooks')
 
-# =====================================================
+# =========================================================
 # EDITAR NOTEBOOK
-# =====================================================
+# =========================================================
 
 @notebooks_bp.route(
     '/editar_notebook/<int:id>',
@@ -281,7 +199,7 @@ def excluir_notebook(id):
 )
 def editar_notebook(id):
 
-    notebook = Notebook.query.get_or_404(id)
+    notebook = Notebook.query.get(id)
 
     if request.method == 'POST':
 
