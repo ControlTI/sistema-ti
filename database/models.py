@@ -277,7 +277,13 @@ class Notebook(db.Model):
     )
 
     termo = db.Column(
-        db.String(300)
+       db.String(200)
+
+    )
+
+    assinatura = db.Column(
+       db.String(200)
+
     )
 
     usuario = db.Column(

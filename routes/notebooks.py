@@ -232,3 +232,66 @@ def editar_notebook(id):
         notebook=notebook
 
     )
+
+import base64
+
+# =====================================================
+# ASSINATURA DIGITAL
+# =====================================================
+
+@notebooks_bp.route(
+
+    '/assinar/<int:id>',
+
+    methods=['GET', 'POST']
+
+)
+def assinar(id):
+
+    notebook = Notebook.query.get(id)
+
+    if request.method == 'POST':
+
+        assinatura = request.form['assinatura']
+
+        assinatura = assinatura.split(',')[1]
+
+        caminho = f'static/assinaturas/{id}.png'
+
+        with open(
+
+            caminho,
+
+            'wb'
+
+        ) as f:
+
+            f.write(
+
+                base64.b64decode(assinatura)
+
+            )
+
+        notebook.assinatura = f'{id}.png'
+
+        notebook.status = 'Assinado'
+
+        db.session.commit()
+
+        return '''
+
+        <h1>
+
+            Documento assinado com sucesso.
+
+        </h1>
+
+        '''
+
+    return render_template(
+
+        'assinar.html',
+
+        notebook=notebook
+
+    )
