@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>ALLIED - Sistema TI</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/style.css') }}"
+    >
+
+</head>
+
+<body>
+
+    <!-- SIDEBAR -->
+
+    <div class="sidebar">
+
+        <div>
+
+            <!-- LOGO -->
+
+            <img
+                src="{{ url_for('static', filename='img/allied.png') }}"
+                class="logo-sidebar"
+            >
+
+            <!-- MENU -->
+
+            <div class="menu">
+
+                <a
+                    href="/home"
+                    class="menu-link {% if request.path == '/home' %}active{% endif %}"
+                >
+
+                    🏠 Início
+
+                </a>
+
+                <!-- ESTOQUE -->
+
+<div
+    class="menu-link"
+    onclick="toggleMenu('estoqueSub')"
+>
+
+    📦 Estoque
+
+</div>
+
+<div
+    class="submenu"
+    id="estoqueSub"
+
+    {% if request.path in ['/estoque', '/entradas', '/saidas'] %}
+
+        style="display:block;"
+
+    {% endif %}
+>
+
+    <a
+        href="/estoque"
+        class="{% if request.path == '/estoque' %}active-sub{% endif %}"
+    >
+
+        📦 Estoque Geral
+
+    </a>
+
+    <a
+        href="/entradas"
+        class="{% if request.path == '/entradas' %}active-sub{% endif %}"
+    >
+
+        ⬇️ Entradas
+
+    </a>
+
+    <a
+        href="/saidas"
+        class="{% if request.path == '/saidas' %}active-sub{% endif %}"
+    >
+
+        ⬆️ Saídas
+
+    </a>
+
+</div>
+               <a
+    href="/notebooks"
+    class="menu-link {% if request.path == '/notebooks' %}active{% endif %}"
+>
+
+    💻 Notebooks
+
+</a>
+
+                <a
+                    href="#"
+                    class="menu-link"
+                >
+
+                    🚚 Fornecedores
+
+                </a>
+
+                <a
+                    href="#"
+                    class="menu-link"
+                >
+
+                    📊 Dashboard
+
+                </a>
+
+                <a
+                    href="#"
+                    class="menu-link"
+                >
+
+                    📄 Relatórios
+
+                </a>
+
+                <a
+                    href="#"
+                    class="menu-link"
+                >
+
+                    👤 Usuários
+
+                </a>
+
+                <a
+                    href="#"
+                    class="menu-link"
+                >
+
+                    ⚙️ Configurações
+
+                </a>
+
+            </div>
+
+        </div>
+
+        <!-- USER -->
+
+        <div class="bottom-user">
+
+            <div class="avatar">
+
+                {{ session['nome'][0] }}
+
+            </div>
+
+            <div>
+
+                <div class="user-name">
+
+                    {{ session['nome'] }}
+
+                </div>
+
+                <div class="user-level">
+
+                    {{ session['nivel'] }}
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- CONTENT -->
+
+    <div class="content">
+
+        {% block content %}
+        {% endblock %}
+
+    </div>
+
+</body>
+
+<script>
+
+function toggleMenu(id){
+
+    const menu = document.getElementById(id);
+
+    if(menu.style.display === "block"){
+
+        menu.style.display = "none";
+
+    }
+
+    else{
+
+        menu.style.display = "block";
+
+    }
+
+}
+
+</script>
+
+    </div>
+
+<script>
+
+function toggleMenu(id){
+
+    const menu = document.getElementById(id);
+
+    if(menu.style.display === "block"){
+
+        menu.style.display = "none";
+
+    }
+
+    else{
+
+        menu.style.display = "block";
+
+    }
+
+}
+
+</script>
+
+</body>
+
+</html>    

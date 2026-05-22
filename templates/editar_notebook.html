@@ -1,0 +1,144 @@
+{% extends 'base_estoque.html' %}
+
+{% block content %}
+
+<div class="topbar">
+
+    <div class="topbar-title">
+
+        ✏️ Editar Notebook
+
+    </div>
+
+</div>
+
+<div class="welcome">
+
+    <div>
+
+        <h1>
+
+            Editar Registro
+
+        </h1>
+
+        <p>
+
+            Atualize as informações do notebook.
+
+        </p>
+
+    </div>
+
+</div>
+
+<div class="modal-edit">
+
+    <div class="modal-box">
+
+        <form
+            method="POST"
+            class="modal-form"
+        >
+
+            <input
+                type="text"
+                name="colaborador"
+                value="{{ notebook.colaborador }}"
+                required
+            >
+
+            <input
+                type="text"
+                name="notebook"
+                value="{{ notebook.notebook }}"
+                required
+            >
+
+            <input
+                type="text"
+                name="marca"
+                value="{{ notebook.marca }}"
+                required
+            >
+
+            <input
+                type="text"
+                name="modelo"
+                value="{{ notebook.modelo }}"
+                required
+            >
+
+            <input
+                type="text"
+                name="processador"
+                value="{{ notebook.processador }}"
+                required
+            >
+
+            <input
+                type="text"
+                name="serial"
+                value="{{ notebook.serial }}"
+                required
+            >
+
+            <input
+                type="date"
+                name="data"
+                value="{{ notebook.data }}"
+                required
+            >
+
+            <select
+                name="status"
+                required
+            >
+
+                <option
+                    value="Entregue"
+                    {% if notebook.status == 'Entregue' %}selected{% endif %}
+                >
+
+                    Entregue
+
+                </option>
+
+                <option
+                    value="Devolvido"
+                    {% if notebook.status == 'Devolvido' %}selected{% endif %}
+                >
+
+                    Devolvido
+
+                </option>
+
+                <option
+                    value="Avariado"
+                    {% if notebook.status == 'Avariado' %}selected{% endif %}
+                >
+
+                    Avariado
+
+                </option>
+
+            </select>
+
+            <textarea
+                name="observacoes"
+                placeholder="Observações"
+            >{{ notebook.observacoes }}</textarea>
+
+            <button type="submit">
+
+                Salvar Alterações
+
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,229 @@
+{% extends 'base_estoque.html' %}
+
+{% block content %}
+
+<div class="topbar">
+
+    <div class="topbar-title">
+
+        ⬇️ Entradas
+
+    </div>
+
+</div>
+
+<div class="welcome">
+
+    <div>
+
+        <h1>
+
+            Controle de Entradas
+
+        </h1>
+
+        <p>
+
+            Registre entradas de produtos no estoque.
+
+        </p>
+
+    </div>
+
+    <button
+        class="btn-add"
+        onclick="abrirModal()"
+    >
+
+        + Nova Entrada
+
+    </button>
+
+</div>
+
+<div class="box">
+
+    <table>
+
+        <thead>
+
+            <tr>
+
+<th>Produto</th>
+<th>Marca</th>
+<th>Especificação</th>
+<th>Quantidade</th>
+<th>Fornecedor</th>
+<th>Nota Fiscal</th>
+<th>Status</th>
+<th>Usuário</th>
+<th>Data</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            {% for entrada in entradas %}
+
+            <tr>
+
+<td>{{ entrada.produto }}</td>
+
+<td>{{ entrada.marca }}</td>
+
+<td>{{ entrada.categoria }}</td>
+
+<td>{{ entrada.quantidade }}</td>
+
+<td>{{ entrada.fornecedor }}</td>
+
+<td>{{ entrada.nota_fiscal }}</td>
+
+<td>{{ entrada.status }}</td>
+
+<td>{{ entrada.usuario }}</td>
+
+<td>{{ entrada.data }}</td>
+
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</div>
+
+<!-- MODAL -->
+
+<div
+    class="modal"
+    id="modalProduto"
+>
+
+    <div class="modal-box">
+
+        <h2>
+
+            Nova Entrada
+
+        </h2>
+
+        <form
+    method="POST"
+    action="/cadastrar_entrada"
+>
+
+    <input
+        type="text"
+        name="produto"
+        placeholder="Produto"
+        required
+    >
+
+    <input
+        type="text"
+        name="marca"
+        placeholder="Marca"
+        required
+    >
+
+    <input
+        type="text"
+        name="categoria"
+        placeholder="Especificação"
+        required
+    >
+
+    <input
+        type="number"
+        name="quantidade"
+        placeholder="Quantidade"
+        required
+    >
+
+    <input
+        type="text"
+        name="fornecedor"
+        placeholder="Fornecedor"
+        required
+    >
+
+    <input
+        type="text"
+        name="nota_fiscal"
+        placeholder="Nota Fiscal"
+    >
+
+    <select
+        name="status"
+        required
+    >
+
+        <option value="Em Estoque">
+
+            Em Estoque
+
+        </option>
+
+        <option value="Em Uso">
+
+            Em Uso
+
+        </option>
+
+        <option value="Avariado">
+
+            Avariado
+
+        </option>
+
+    </select>
+
+    <input
+        type="date"
+        name="data"
+        required
+    >
+
+    <button type="submit">
+
+        Salvar Entrada
+
+    </button>
+
+</form>
+
+    </div>
+
+</div>
+
+<script>
+
+function abrirModal(){
+
+    document
+    .getElementById('modalProduto')
+    .style.display = 'flex';
+
+}
+
+window.onclick = function(event){
+
+    let modal =
+    document.getElementById('modalProduto');
+
+    if(event.target == modal){
+
+        modal.style.display = 'none';
+
+    }
+
+}
+
+</script>
+
+{% endblock %}

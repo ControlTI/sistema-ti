@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+<meta charset="UTF-8">
+
+<title>Termo de Entrega</title>
+
+<style>
+
+*{
+    box-sizing:border-box;
+}
+
+body{
+    font-family:Arial, Helvetica, sans-serif;
+    background:#f2f2f2;
+    margin:0;
+    padding:20px;
+    color:#000;
+}
+
+.pagina{
+    width:794px;
+    min-height:1123px;
+    background:#fff;
+    margin:auto;
+    padding:18px 28px;
+}
+
+table{
+    border-collapse:collapse;
+    width:100%;
+}
+
+/* ================= CABEÇALHO ================= */
+
+.cabecalho td{
+    border:1px solid #000;
+    font-size:12px;
+    padding:5px;
+    vertical-align:middle;
+}
+
+.logo{
+    width:105px;
+    text-align:center;
+}
+
+.logo img{
+    width:75px;
+}
+
+.titulo-principal{
+    text-align:center;
+    font-weight:bold;
+    font-size:13px;
+    height:38px;
+}
+
+.titulo{
+    width:390px;
+    line-height:1.3;
+}
+
+.emitente{
+    width:250px;
+    line-height:1.3;
+}
+
+/* ================= TEXTO ================= */
+
+.texto{
+    margin-top:34px;
+    font-size:12px;
+    text-align:justify;
+    line-height:1.5;
+}
+
+/* ================= TABELA ================= */
+
+.equipamentos{
+    margin-top:28px;
+    font-size:11px;
+}
+
+.equipamentos th,
+.equipamentos td{
+    border:1px solid #000;
+    padding:6px;
+    text-align:center;
+}
+
+.equipamentos th{
+    font-weight:bold;
+}
+
+.equipamentos td{
+    height:26px;
+}
+
+/* ================= REGRAS ================= */
+
+.regras{
+    margin-top:12px;
+    font-size:11px;
+    text-align:justify;
+    line-height:1.35;
+}
+
+.regras ol{
+    margin-top:5px;
+    padding-left:18px;
+}
+
+.regras li{
+    margin-bottom:4px;
+}
+
+.regras ol ol{
+    margin-top:4px;
+}
+
+/* ================= DATA ================= */
+
+.data{
+    margin-top:42px;
+    text-align:right;
+    font-size:12px;
+    line-height:2;
+}
+
+/* ================= ASSINATURAS ================= */
+
+.assinaturas{
+    margin-top:70px;
+    width:100%;
+}
+
+.assinaturas td{
+    width:50%;
+    text-align:center;
+}
+
+.linha-ass{
+    width:240px;
+    border-top:1px solid #000;
+    margin:auto;
+    padding-top:4px;
+    font-size:11px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="pagina">
+
+    <!-- CABEÇALHO -->
+
+    <table class="cabecalho">
+
+        <tr>
+
+            <td rowspan="3" class="logo">
+
+                <img src="C:/SistemaTi/Projeto/static/img/simbol.png">
+
+            </td>
+
+            <td colspan="2" class="titulo-principal">
+
+                ALLIED TECNOLOGIA S/A
+
+            </td>
+
+        </tr>
+
+        <tr>
+
+            <td class="titulo">
+
+                <strong>Título:</strong><br>
+
+                Termo de entrega de equipamento em comodato.
+
+            </td>
+
+            <td class="emitente">
+
+                <strong>Setor emitente:</strong> TI -<br>
+                INFRAESTRUTURA
+
+            </td>
+
+        </tr>
+
+        <tr>
+
+            <td></td>
+
+            <td>
+
+                <strong>Confidencialidade:</strong> INTERNO
+
+            </td>
+
+        </tr>
+
+    </table>
+
+   
+    <!-- TEXTO -->
+
+    <div class="texto">
+
+        <strong>{{ colaborador }}</strong>,
+        portador(a) do CPF
+        <strong>{{ cpf }}</strong>,
+        colaborador(a) da área de
+        <strong>{{ area }}</strong>,
+
+        doravante denominado(a) COMODATÁRIO(A), nesta data, recebe de
+        <strong>{{ tecnico }}</strong>,
+        identificado(a) pela matrícula nº
+        <strong>{{ matricula }}</strong>,
+        colaborador(a) da área de TI o(s) equipamento(s) abaixo descrito(s)
+        regido(s) por este termo, bem como declara e está ciente que:
+
+    </div>
+
+    <!-- TABELA -->
+
+    <table class="equipamentos">
+
+        <tr>
+
+            <th style="width:28%;">
+
+                EQUIPAMENTO
+
+            </th>
+
+            <th style="width:14%;">
+
+                MARCA
+
+            </th>
+
+            <th style="width:17%;">
+
+                MODELO
+
+            </th>
+
+            <th style="width:21%;">
+
+                NÚM. DE SÉRIE
+
+            </th>
+
+            <th style="width:20%;">
+
+                VALOR
+
+            </th>
+
+        </tr>
+
+        <tr>
+
+            <td>{{ notebook }}</td>
+
+            <td>{{ marca }}</td>
+
+            <td>{{ modelo }}</td>
+
+            <td>{{ serial }}</td>
+
+            <td>{{ valor }}</td>
+
+        </tr>
+
+    </table>
+
+    <!-- REGRAS -->
+
+    <div class="regras">
+
+        <ol>
+
+            <li>
+                Este(s) equipamento(s) é (são) de propriedade da Allied Tecnologia S/A.
+            </li>
+
+            <li>
+                Declara que recebeu prévio e adequado treinamento para a sua utilização.
+            </li>
+
+            <li>
+                Compromete-se a fazer uso adequado do equipamento, bem como a conservá-lo mantendo a sua integridade, de acordo com as políticas e normas internas da Empresa.
+            </li>
+
+            <li>
+                Que sendo responsável pelo equipamento, tem ciência de que, em caso de não observado o bom uso do equipamento ocasionando a inutilização total ou extravio, deverá comunicar imediatamente ao respectivo setor para as providências cabíveis.
+            </li>
+
+            <li>
+                Que na hipótese de restar constatado que os danos ou extravio decorreram de negligência do COMODATÁRIO, os custos de reparo ou substituição deverão ser suportados por este, anuindo desde já com desconto salarial para o seu reparo ou reposição.
+            </li>
+
+            <li>
+                Tem ciência de que o equipamento estará sujeito a inspeções a serem realizadas pelo setor de tecnologia (TI) sem prévio aviso.
+            </li>
+
+            <li>
+
+                A devolução imediata do equipamento ocorrerá nos seguintes casos:
+
+                <ol type="a">
+
+                    <li>
+                        Falha total de componente interno e/ou softwares vitais para o devido funcionamento do equipamento após constatado pela área de TI através de laudo técnico.
+                    </li>
+
+                    <li>
+                        Substituição justificada do equipamento.
+                    </li>
+
+                    <li>
+
+                        Requer justificativa e aprovação do(a) gestor(a) do(a) COMODATÁRIO supra qualificado.
+
+                        <ol type="I">
+
+                            <li>
+                                Diante da suspensão/término de contrato de trabalho ou do encerramento do contrato de prestação de serviços, o equipamento deverá ser devolvido no caso de híbrido, entrega imediata e no caso de contrato 100% home office, em até 48 (quarenta e oito) horas.
+                            </li>
+
+                        </ol>
+
+                    </li>
+
+                </ol>
+
+            </li>
+
+            <li>
+                O COMODATÁRIO assume neste ato, TOTAL responsabilidade civil e criminal pelo uso do respectivo equipamento.
+            </li>
+
+            <li>
+                Toda entrega e devolução de equipamento corporativo fica em cargo da empresa.
+            </li>
+
+        </ol>
+
+    </div>
+
+    <!-- DATA -->
+
+    <div class="data">
+
+        Data de recebimento do(s) equipamento(s).<br><br>
+
+        São Paulo, {{ data }}.
+
+    </div>
+
+    <!-- ASSINATURAS -->
+
+    <table class="assinaturas">
+
+        <tr>
+
+            <td>
+
+                <div class="linha-ass">
+
+                    COMODATÁRIO
+
+                </div>
+
+            </td>
+
+            <td>
+
+                <div class="linha-ass">
+
+                    Técnico responsável
+
+                </div>
+
+            </td>
+
+        </tr>
+
+    </table>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>ALLIED - Dashboard</title>
+
+<link
+rel="stylesheet"
+href="{{ url_for('static', filename='css/style.css') }}">
+
+</head>
+
+<body>
+
+<!-- SIDEBAR -->
+
+<div class="sidebar">
+
+    <img
+        src="{{ url_for('static', filename='img/allied.png') }}"
+        class="logo-sidebar">
+
+   <div class="menu">
+
+    <a
+        href="/home"
+        class="menu-link active"
+    >
+
+        🏠 Início
+
+    </a>
+
+    <!-- ESTOQUE -->
+
+    <div
+        class="menu-link"
+        onclick="toggleMenu('estoqueSub')"
+    >
+
+        📦 Estoque
+
+    </div>
+
+    <div
+        class="submenu"
+        id="estoqueSub"
+    >
+
+        <a href="/estoque">
+
+            📦 Estoque Geral
+
+        </a>
+
+        <a href="/entradas">
+
+            ⬇ Entradas
+
+        </a>
+
+        <a href="/saidas">
+
+            ⬆ Saídas
+
+        </a>
+
+    </div>
+
+    <!-- NOTEBOOKS -->
+
+    <div
+        class="menu-link"
+        onclick="toggleMenu('noteSub')"
+    >
+
+        💻 Notebooks
+
+    </div>
+
+    <div
+        class="submenu"
+        id="noteSub"
+    >
+
+        <a href="#">
+
+            📤 Entregas
+
+        </a>
+
+        <a href="#">
+
+            📥 Devoluções
+
+        </a>
+
+    </div>
+
+    <!-- MENU -->
+
+    <a href="#" class="menu-link">
+
+        🚚 Fornecedores
+
+    </a>
+
+    <a href="#" class="menu-link">
+
+        📊 Dashboard
+
+    </a>
+
+    <a href="#" class="menu-link">
+
+        📑 Relatórios
+
+    </a>
+
+    <a href="#" class="menu-link">
+
+        👤 Usuários
+
+    </a>
+
+    <a href="#" class="menu-link">
+
+        ⚙ Configurações
+
+    </a>
+
+    </div>
+
+    <div class="bottom-user">
+
+        <div class="avatar">
+
+            {{ session['nome'][0] }}
+
+        </div>
+
+        <div>
+
+            <div class="user-name">
+
+                {{ session['nome'] }}
+
+            </div>
+
+            <div class="user-level">
+
+                {{ session['nivel'] }}
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- CONTENT -->
+
+<div class="content">
+
+    <!-- TOPBAR -->
+
+    <div class="topbar">
+
+        <div class="topbar-title">
+
+            ☰ Início
+
+        </div>
+
+        <div class="topbar-right">
+
+            🔔
+
+            <div class="avatar">
+
+                {{ session['nome'][0] }}
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- WELCOME -->
+
+    <div class="welcome">
+
+        <div>
+
+            <h1>
+
+                Bem-vinda, {{ session['nome'] }} 👋
+
+            </h1>
+
+            <p>
+
+                Aqui está um resumo geral do seu controle de estoque.
+
+            </p>
+
+        </div>
+
+        <div class="filial-badge">
+
+            {{ session['filial'] }}
+
+        </div>
+
+    </div>
+
+    <!-- CARDS -->
+
+    <div class="cards">
+
+        <div class="card">
+
+            <div class="card-icon green">
+                📦
+            </div>
+
+            <div>
+
+                <h3>PRODUTOS</h3>
+
+                <div class="card-number">
+                    1.245
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="card">
+
+            <div class="card-icon blue">
+                ⬇
+            </div>
+
+            <div>
+
+                <h3>ENTRADAS</h3>
+
+                <div class="card-number">
+                    320
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="card">
+
+            <div class="card-icon orange">
+                ⬆
+            </div>
+
+            <div>
+
+                <h3>SAÍDAS</h3>
+
+                <div class="card-number">
+                    280
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="card">
+
+            <div class="card-icon purple">
+                💻
+            </div>
+
+            <div>
+
+                <h3>NOTEBOOKS</h3>
+
+                <div class="card-number">
+                    58
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- GRID -->
+
+    <div class="grid">
+
+        <!-- TABELA -->
+
+        <div class="box">
+
+            <div class="box-title">
+
+                <h2>
+                    Movimentações recentes
+                </h2>
+
+            </div>
+
+            <table>
+
+                <tr>
+                    <th>TIPO</th>
+                    <th>DESCRIÇÃO</th>
+                    <th>PRODUTO</th>
+                    <th>QTD</th>
+                    <th>DATA</th>
+                </tr>
+
+                <tr>
+                    <td>Entrada</td>
+                    <td>Compra</td>
+                    <td>Monitor Dell</td>
+                    <td>25</td>
+                    <td>24/05</td>
+                </tr>
+
+                <tr>
+                    <td>Saída</td>
+                    <td>Venda</td>
+                    <td>Teclado USB</td>
+                    <td>12</td>
+                    <td>24/05</td>
+                </tr>
+
+                <tr>
+                    <td>Entrega</td>
+                    <td>Notebook entregue</td>
+                    <td>Dell Latitude</td>
+                    <td>1</td>
+                    <td>23/05</td>
+                </tr>
+
+            </table>
+
+        </div>
+
+        <!-- DONUT -->
+
+        <div class="box">
+
+            <div class="box-title">
+
+                <h2>
+                    Estoque por categoria
+                </h2>
+
+            </div>
+
+            <div class="donut"></div>
+
+        </div>
+
+    </div>
+
+    <!-- BOTTOM -->
+
+    <div class="bottom-grid">
+
+        <!-- ALERTAS -->
+
+        <div class="box">
+
+            <div class="box-title">
+
+                <h2 style="color:#ef4444;">
+
+                    Alertas importantes
+
+                </h2>
+
+            </div>
+
+            <div class="alert red">
+
+                ⚠ 15 produtos com estoque baixo
+
+            </div>
+
+            <div class="alert yellow">
+
+                ⚠ 3 notebooks pendentes devolução
+
+            </div>
+
+        </div>
+
+        <!-- AÇÕES -->
+
+        <div class="box">
+
+            <div class="box-title">
+
+                <h2 style="color:#4c8f12;">
+
+                    Ações rápidas
+
+                </h2>
+
+            </div>
+
+            <div class="actions">
+
+    <a
+        href="/estoque"
+        class="action"
+    >
+
+        📦 Novo Produto
+
+    </a>
+
+    <a
+        href="/entradas"
+        class="action"
+    >
+
+        ⬇ Entrada
+
+    </a>
+
+    <a
+        href="/saidas"
+        class="action"
+    >
+
+        ⬆ Saída
+
+    </a>
+
+    <div class="action">
+
+        💻 Entrega
+
+    </div>
+
+    <div class="action">
+
+        📑 Relatórios
+
+    </div>
+
+</div>
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+function toggleMenu(id){
+
+    const menu = document.getElementById(id);
+
+    if(menu.style.display === "block"){
+
+        menu.style.display = "none";
+
+    }
+
+    else{
+
+        menu.style.display = "block";
+
+    }
+
+}
+
+</script>

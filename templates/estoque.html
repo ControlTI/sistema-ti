@@ -1,0 +1,530 @@
+{% extends 'base_estoque.html' %}
+
+{% block content %}
+
+<!-- TOPBAR -->
+
+<div class="topbar">
+
+    <div class="topbar-title">
+
+        📦 Estoque
+
+    </div>
+
+    <div class="topbar-right">
+
+        <div class="filial-badge">
+
+            {{ session['filial'] }}
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- WELCOME -->
+
+<div class="welcome">
+
+    <div>
+
+        <h1>
+
+            Controle de Estoque
+
+        </h1>
+
+        <p>
+
+            Gerencie produtos, entradas e saídas.
+
+        </p>
+
+    </div>
+
+    <button
+        class="btn-add"
+        onclick="abrirModal()"
+    >
+
+        + Novo Produto
+
+    </button>
+
+</div>
+
+<!-- TABELA -->
+
+<div class="box">
+
+    <div class="box-title">
+
+        <h2>
+
+            Produtos em Estoque
+
+        </h2>
+
+    </div>
+
+    <table>
+
+        <thead>
+
+            <tr>
+
+<th>Produto</th>
+<th>Marca</th>
+<th>Especificação</th>
+<th>Quantidade</th>
+<th>Fornecedor</th>
+<th>Nota Fiscal</th>
+<th>Status</th>
+<th>Usuário</th>
+<th>Data</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            {% for produto in produtos %}
+
+            <tr>
+
+<td>{{ produto.nome }}</td>
+
+<td>{{ produto.marca }}</td>
+
+<td>{{ produto.categoria }}</td>
+
+<td>{{ produto.quantidade }}</td>
+
+<td>{{ produto.fornecedor }}</td>
+
+<td>{{ produto.nota_fiscal }}</td>
+
+<td>{{ produto.status }}</td>
+
+<td>{{ produto.usuario }}</td>
+
+<td>{{ produto.data }}</td>
+
+                <td>
+
+                    {% if produto.quantidade > 5 %}
+
+                        <span class="status-ok">
+
+                            Em Estoque
+
+                        </span>
+
+                    {% elif produto.quantidade > 0 %}
+
+                        <span class="status-low">
+
+                            Estoque Baixo
+
+                        </span>
+
+                    {% else %}
+
+                        <span class="status-zero">
+
+                            Sem Estoque
+
+                        </span>
+
+                    {% endif %}
+
+                </td>
+
+                <td>
+
+                    <button
+                        class="btn-action edit"
+                        onclick="abrirEditar(
+                            '{{ produto.id }}',
+                            '{{ produto.nome }}',
+                            '{{ produto.marca }}',
+                            '{{ produto.categoria }}',
+                            '{{ produto.quantidade }}',
+                            '{{ produto.status }}'
+                        )"
+                    >
+
+                        ✏️
+
+                    </button>
+
+                    <a href="/excluir_produto/{{ produto.id }}">
+
+                        <button class="btn-action delete">
+
+                            🗑️
+
+                        </button>
+
+                    </a>
+
+                </td>
+
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</div>
+
+<!-- MODAL NOVO PRODUTO -->
+
+<div
+    class="modal"
+    id="modalProduto"
+>
+
+    <div class="modal-box">
+
+        <h2>
+
+            Novo Produto
+
+        </h2>
+
+        <form
+            method="POST"
+            action="/cadastrar_produto"
+        >
+
+            <input
+                type="text"
+                name="nome"
+                placeholder="Produto"
+                required
+            >
+
+            <input
+                type="text"
+                name="marca"
+                placeholder="Marca"
+                required
+            >
+
+            <input
+                type="text"
+                name="categoria"
+                placeholder="Especificação"
+                required
+            >
+
+            <input
+                type="number"
+                name="quantidade"
+                placeholder="Quantidade"
+                required
+            >
+
+            <input
+                type="text"
+                name="fornecedor"
+                placeholder="Fornecedor"
+            >
+
+            <input
+                type="text"
+                name="nota_fiscal"
+                placeholder="Nota Fiscal"
+            >
+
+            <input
+                type="text"
+                name="serial"
+                placeholder="Número de Série"
+            >
+
+            <input
+                type="text"
+                name="patrimonio"
+                placeholder="Patrimônio"
+            >
+
+            <input
+                type="date"
+                name="data"
+                required
+            >
+
+            <select
+                name="status"
+                required
+            >
+
+                <option value="Em Estoque">
+
+                    Em Estoque
+
+                </option>
+
+                <option value="Em Uso">
+
+                    Em Uso
+
+                </option>
+
+                <option value="Avariado">
+
+                    Avariado
+
+                </option>
+
+            </select>
+
+            <textarea
+                name="observacoes"
+                placeholder="Observações"
+            ></textarea>
+
+            <button type="submit">
+
+                Salvar Produto
+
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+<!-- MODAL EDITAR -->
+
+<div
+    class="modal"
+    id="modalEditar"
+>
+
+    <div class="modal-box">
+
+        <h2>
+
+            Editar Produto
+
+        </h2>
+
+        <form
+            id="formEditar"
+            method="POST"
+        >
+
+            <input
+                type="text"
+                name="nome"
+                id="editNome"
+                required
+            >
+
+            <input
+                type="text"
+                name="marca"
+                id="editMarca"
+                required
+            >
+
+            <input
+                type="text"
+                name="categoria"
+                id="editCategoria"
+                required
+            >
+
+            <input
+                type="number"
+                name="quantidade"
+                id="editQuantidade"
+                required
+            >
+
+            <input
+                type="text"
+                name="fornecedor"
+                id="editFornecedor"
+            >
+
+            <input
+                type="text"
+                name="nota_fiscal"
+                id="editNotaFiscal"
+            >
+
+            <input
+                type="text"
+                name="serial"
+                id="editSerial"
+            >
+
+            <input
+                type="text"
+                name="patrimonio"
+                id="editPatrimonio"
+            >
+
+            <input
+                type="date"
+                name="data"
+                id="editData"
+            >
+
+            <select
+                name="status"
+                id="editStatus"
+            >
+
+                <option value="Em Estoque">
+
+                    Em Estoque
+
+                </option>
+
+                <option value="Em Uso">
+
+                    Em Uso
+
+                </option>
+
+                <option value="Avariado">
+
+                    Avariado
+
+                </option>
+
+            </select>
+
+            <textarea
+                name="observacoes"
+                id="editObservacoes"
+                placeholder="Observações"
+            ></textarea>
+
+            <button type="submit">
+
+                Salvar Alterações
+
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+<!-- SCRIPT -->
+
+<script>
+
+function abrirModal(){
+
+    document
+    .getElementById('modalProduto')
+    .style.display = 'flex';
+
+}
+
+function abrirEditar(
+    id,
+    nome,
+    marca,
+    categoria,
+    quantidade,
+    fornecedor,
+    nota_fiscal,
+    serial,
+    patrimonio,
+    status,
+    data,
+    observacoes
+){
+
+    document
+    .getElementById('modalEditar')
+    .style.display = 'flex';
+
+    document
+    .getElementById('editNome')
+    .value = nome;
+
+    document
+    .getElementById('editMarca')
+    .value = marca;
+
+    document
+    .getElementById('editCategoria')
+    .value = categoria;
+
+    document
+    .getElementById('editQuantidade')
+    .value = quantidade;
+
+    document
+    .getElementById('editFornecedor')
+    .value = fornecedor;
+
+    document
+    .getElementById('editNotaFiscal')
+    .value = nota_fiscal;
+
+    document
+    .getElementById('editSerial')
+    .value = serial;
+
+    document
+    .getElementById('editPatrimonio')
+    .value = patrimonio;
+
+    document
+    .getElementById('editStatus')
+    .value = status;
+
+    document
+    .getElementById('editData')
+    .value = data;
+
+    document
+    .getElementById('editObservacoes')
+    .value = observacoes;
+
+    document
+    .getElementById('formEditar')
+    .action = '/editar_produto/' + id;
+
+}
+window.onclick = function(event){
+
+    let modal =
+    document.getElementById('modalProduto');
+
+    let modalEditar =
+    document.getElementById('modalEditar');
+
+    if(event.target == modal){
+
+        modal.style.display = 'none';
+
+    }
+
+    if(event.target == modalEditar){
+
+        modalEditar.style.display = 'none';
+
+    }
+
+}
+
+</script>
+
+{% endblock %}

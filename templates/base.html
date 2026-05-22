@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Sistema TI</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/style.css') }}"
+    >
+
+</head>
+
+<body>
+
+    <!-- =====================================================
+    SIDEBAR
+    ===================================================== -->
+
+    <div class="sidebar">
+
+        <div>
+
+            <div class="logo">
+
+                ALLIED
+
+            </div>
+
+            <div class="menu">
+
+                <a
+                    href="/home"
+                    class="menu-link"
+                >
+
+                    🏠 Início
+
+                </a>
+
+                <a
+                    href="/estoque"
+                    class="menu-link active"
+                >
+
+                    📦 Estoque
+
+                </a>
+
+                <a
+                    href="#"
+                    class="menu-link"
+                >
+
+                    💻 Notebooks
+
+                </a>
+
+                <a
+                    href="#"
+                    class="menu-link"
+                >
+
+                    🚚 Fornecedores
+
+                </a>
+
+                <a
+                    href="#"
+                    class="menu-link"
+                >
+
+                    📊 Dashboard
+
+                </a>
+
+                <a
+                    href="#"
+                    class="menu-link"
+                >
+
+                    📄 Relatórios
+
+                </a>
+
+                <a
+                    href="#"
+                    class="menu-link"
+                >
+
+                    👤 Usuários
+
+                </a>
+
+                <a
+                    href="#"
+                    class="menu-link"
+                >
+
+                    ⚙️ Configurações
+
+                </a>
+
+            </div>
+
+        </div>
+
+        <div class="bottom-user">
+
+            <div class="avatar">
+
+                B
+
+            </div>
+
+            <div>
+
+                <div class="user-name">
+
+                    Brenda
+
+                </div>
+
+                <div class="user-level">
+
+                    Admin
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- =====================================================
+    CONTENT
+    ===================================================== -->
+
+    <div class="content">
+
+        {% block content %}
+        {% endblock %}
+
+    </div>
+
+</body>
+
+</html>

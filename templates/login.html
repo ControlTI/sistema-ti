@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>ALLIED - Login</title>
+
+    <link
+rel="stylesheet"
+href="{{ url_for('static', filename='css/login.css') }}">
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- LADO ESQUERDO -->
+
+    <div class="login-left">
+
+        <img
+            src="{{ url_for('static', filename='img/allied.png') }}"
+            class="login-logo">
+
+       <h1>
+    Gestão de<br>
+    Estoque TI
+</h1>
+
+<p>
+    Centralize o controle de entradas, saídas, notebooks e ativos da Allied em uma única plataforma.
+</p>
+
+    </div>
+
+    <!-- LADO DIREITO -->
+
+    <div class="login-right">
+
+        <div class="login-box">
+
+            <h2>Entrar na conta</h2>
+
+            {% if erro %}
+
+            <div class="erro">
+
+                Usuário, senha ou filial incorretos.
+
+            </div>
+
+            {% endif %}
+
+            <!-- FILIAIS -->
+
+            <div class="filiais">
+
+                <button
+                    type="button"
+                    class="filial-btn filial-active"
+                    onclick="selecionarFilial(this, 'Robocop')">
+
+                    Robocop
+
+                </button>
+
+                <button
+                    type="button"
+                    class="filial-btn"
+                    onclick="selecionarFilial(this, 'Serra')">
+
+                    Serra
+
+                </button>
+
+                <button
+                    type="button"
+                    class="filial-btn"
+                    onclick="selecionarFilial(this, 'Jundiai')">
+
+                    Jundiaí
+
+                </button>
+
+            </div>
+
+            <!-- FORM LOGIN -->
+
+            <form method="POST">
+
+                <input
+                    type="hidden"
+                    id="filial"
+                    name="filial"
+                    value="Robocop">
+
+                <div class="input-group">
+
+                    <input
+                        type="text"
+                        name="usuario"
+                        placeholder="Usuário"
+                        required>
+
+                </div>
+
+                <div class="input-group">
+
+                    <input
+                        type="password"
+                        name="senha"
+                        placeholder="Senha"
+                        required>
+
+                </div>
+
+                <button class="btn" type="submit">
+
+                    Entrar
+
+                </button>
+
+            </form>
+
+            <!-- LINKS -->
+
+            <div class="links">
+
+                <a href="#"
+                   onclick="abrirPrimeiroAcesso()">
+
+                   Meu primeiro acesso
+
+                </a>
+
+                <span class="divider">|</span>
+
+                <a href="#"
+                   onclick="abrirSenha()">
+
+                   Esqueceu a senha?
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- MODAL NOVO USUÁRIO -->
+
+<div class="modal" id="modalPrimeiroAcesso">
+
+    <div class="modal-box">
+
+        <h2>Novo Usuário</h2>
+
+        <form method="POST" action="/criar_usuario">
+
+            <input
+                type="text"
+                name="nome"
+                placeholder="Nome"
+                required>
+
+            <input
+                type="text"
+                name="usuario"
+                placeholder="Usuário"
+                required>
+
+            <input
+                type="password"
+                name="senha"
+                placeholder="Senha"
+                required>
+
+            <select name="filial">
+
+                <option value="Robocop">
+                    Robocop
+                </option>
+
+                <option value="Serra">
+                    Serra
+                </option>
+
+                <option value="Jundiai">
+                    Jundiaí
+                </option>
+
+            </select>
+
+            <button type="submit">
+
+                CRIAR USUÁRIO
+
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+<!-- MODAL TROCAR SENHA -->
+
+<div class="modal" id="modalSenha">
+
+    <div class="modal-box">
+
+        <h2>Trocar Senha</h2>
+
+        <form method="POST" action="/trocar_senha">
+
+            <input
+                type="text"
+                name="usuario"
+                placeholder="Usuário"
+                required>
+
+            <input
+                type="password"
+                name="nova_senha"
+                placeholder="Nova senha"
+                required>
+
+            <button type="submit">
+
+                ALTERAR SENHA
+
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+
+</body>
+</html>

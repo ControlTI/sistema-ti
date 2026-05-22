@@ -1,0 +1,338 @@
+{% extends 'base_estoque.html' %}
+
+{% block content %}
+
+<div class="topbar">
+
+    <div class="topbar-title">
+
+        💻 Notebooks
+
+    </div>
+
+</div>
+
+<div class="welcome">
+
+    <div>
+
+        <h1>
+
+            Controle de Notebooks
+
+        </h1>
+
+        <p>
+
+            Gerencie entregas e devoluções.
+
+        </p>
+
+    </div>
+
+    <button
+        class="btn-add"
+        onclick="abrirModal()"
+    >
+
+        + Novo Registro
+
+    </button>
+
+</div>
+
+<div class="box">
+
+    <table>
+
+        <thead>
+
+            <tr>
+
+                <th>Colaborador</th>
+                <th>Notebook</th>
+                <th>Marca</th>
+                <th>Modelo</th>
+                <th>Processador</th>
+                <th>Serial</th>
+                <th>Status</th>
+                <th>Usuário</th>
+                <th>Data</th>
+                <th>Termo</th>
+                <th>Ações</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            {% for notebook in notebooks %}
+
+            <tr>
+
+                <td>{{ notebook.colaborador }}</td>
+
+                <td>{{ notebook.notebook }}</td>
+
+                <td>{{ notebook.marca }}</td>
+
+                <td>{{ notebook.modelo }}</td>
+
+                <td>{{ notebook.processador }}</td>
+
+                <td>{{ notebook.serial }}</td>
+
+                <td>{{ notebook.status }}</td>
+
+                <td>{{ notebook.usuario }}</td>
+
+                <td>{{ notebook.data }}</td>
+
+                <td>
+
+                    <a
+                        href="/uploads/{{ notebook.termo }}"
+                        target="_blank"
+                    >
+
+                        📄 Ver
+
+                    </a>
+
+                </td>
+
+                <td>
+
+                    <a
+                        href="/editar_notebook/{{ notebook.id }}"
+                        class="btn-edit"
+                    >
+
+                        ✏️
+
+                    </a>
+
+                    <a
+                        href="/excluir_notebook/{{ notebook.id }}"
+                        class="btn-delete"
+                    >
+
+                        🗑️
+
+                    </a>
+
+                </td>
+
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</div>
+
+<!-- MODAL -->
+
+<div
+    class="modal"
+    id="modalProduto"
+>
+
+    <div class="modal-box">
+
+        <h2>
+
+            Novo Notebook
+
+        </h2>
+
+        <form
+            method="POST"
+            action="/cadastrar_notebook"
+            enctype="multipart/form-data"
+        >
+
+            <input
+                type="text"
+                name="colaborador"
+                placeholder="Colaborador"
+                required
+            >
+
+            <input
+                type="text"
+                name="cpf"
+                placeholder="CPF"
+                required
+            >
+
+            <input
+                type="text"
+                name="area"
+                placeholder="Área"
+                required
+            >
+
+            <input
+                type="text"
+                name="matricula"
+                placeholder="Matrícula"
+                required
+            >
+
+            <input
+                type="text"
+                name="notebook"
+                placeholder="Notebook"
+                required
+            >
+
+            <input
+                type="text"
+                name="marca"
+                placeholder="Marca"
+                required
+            >
+
+            <input
+                type="text"
+                name="modelo"
+                placeholder="Modelo"
+                required
+            >
+
+            <input
+                type="text"
+                name="processador"
+                placeholder="Processador"
+                required
+            >
+
+            <input
+                type="text"
+                name="serial"
+                placeholder="Número de Série"
+                required
+            >
+
+            <input
+                type="text"
+                name="valor"
+                placeholder="Valor"
+                required
+            >
+
+            <input
+                type="date"
+                name="data"
+                required
+            >
+
+            <input
+                type="email"
+                name="email_destino"
+                placeholder="E-mail do Colaborador"
+                required
+            >
+
+            <select
+                name="status"
+                required
+            >
+
+                <option value="Entregue">
+
+                    Entregue
+
+                </option>
+
+                <option value="Devolvido">
+
+                    Devolvido
+
+                </option>
+
+                <option value="Avariado">
+
+                    Avariado
+
+                </option>
+
+            </select>
+
+            <div class="termo-actions">
+
+                <label class="upload-box">
+
+                    📄 Anexar Termo
+
+                    <input
+                        type="file"
+                        name="termo"
+                        accept=".pdf"
+                        hidden
+                    >
+
+                </label>
+
+                <label class="generate-box">
+
+                    <input
+                        type="checkbox"
+                        name="gerar_termo"
+                        value="sim"
+                        hidden
+                    >
+
+                    ⚡ Gerar Termo
+
+                </label>
+
+            </div>
+
+            <textarea
+                name="observacoes"
+                placeholder="Observações"
+            ></textarea>
+
+            <button type="submit">
+
+                Salvar Registro
+
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+<script>
+
+function abrirModal(){
+
+    document
+    .getElementById('modalProduto')
+    .style.display = 'flex';
+
+}
+
+window.onclick = function(event){
+
+    let modal =
+    document.getElementById('modalProduto');
+
+    if(event.target == modal){
+
+        modal.style.display = 'none';
+
+    }
+
+}
+
+</script>
+
+{% endblock %}
