@@ -127,7 +127,7 @@
                     </a>
 
                     <a
-                        href="/assinar/{{ notebook.id }}"
+                        href="/assinar/{{ notebook.token }}"
                         class="btn-sign"
                         target="_blank"
                     >
@@ -164,10 +164,10 @@
         </h2>
 
         <form
-               action="/cadastrar_notebook"
-               method="POST"
-               enctype="multipart/form-data"
-            >
+            action="/cadastrar_notebook"
+            method="POST"
+            enctype="multipart/form-data"
+        >
 
             <input
                 type="text"
@@ -340,7 +340,19 @@
 
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+
 <script>
+
+emailjs.init(
+
+    'PB0iMDaDA3h3cOrjN'
+
+);
+
+// =====================================================
+// MODAL
+// =====================================================
 
 function abrirModal(){
 
@@ -362,6 +374,10 @@ window.onclick = function(event){
     }
 
 }
+
+// =====================================================
+// CAMPOS TERMO
+// =====================================================
 
 const radios = document.querySelectorAll(
 
@@ -450,6 +466,94 @@ radios.forEach(radio => {
 });
 
 atualizarCampos();
+
+// =====================================================
+// EMAILJS
+// =====================================================
+
+const form = document.querySelector(
+
+    'form'
+
+);
+
+form.addEventListener(
+
+    'submit',
+
+    async function(){
+
+        const email = document.querySelector(
+
+            'input[name="email_destino"]'
+
+        ).value;
+
+        const nome = document.querySelector(
+
+            'input[name="colaborador"]'
+
+        ).value;
+
+        setTimeout(async () => {
+
+            try{
+
+                const response = await fetch(
+
+                    '/ultimo_token'
+
+                );
+
+                const data = await response.json();
+
+                const link =
+
+                `https://sistema-ti-546b.onrender.com/carregando/${data.token}`;
+
+                await emailjs.send(
+
+                    'service_8f3ccje',
+
+                    'template_6z1xz6p',
+
+                    {
+
+                        nome: nome,
+
+                        email: email,
+
+                        link: link
+
+                    }
+
+                );
+
+                console.log(
+
+                    'EMAIL ENVIADO'
+
+                );
+
+            }
+
+            catch(erro){
+
+                console.log(
+
+                    'ERRO EMAIL',
+
+                    erro
+
+                );
+
+            }
+
+        }, 4000);
+
+    }
+
+);
 
 </script>
 

@@ -443,3 +443,18 @@ def salvar_assinatura(id):
         'status': 'ok'
 
     }
+
+@notebooks_bp.route('/ultimo_token')
+def ultimo_token():
+
+    notebook = Notebook.query.order_by(
+
+        Notebook.id.desc()
+
+    ).first()
+
+    return {
+
+        'token': notebook.token
+
+    }
