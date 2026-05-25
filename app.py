@@ -269,7 +269,7 @@ def home():
 # =====================================================
 
 @app.route('/uploads/<filename>')
-def uploads(filename):
+def upload(filename):
 
     return send_from_directory(
         'uploads',
@@ -286,7 +286,7 @@ if __name__ == '__main__':
         debug=True
     )
 @app.route('/uploads/<path:filename>')
-def uploads(filename):
+def arquivos_upload(filename):
 
     return send_from_directory(
 
