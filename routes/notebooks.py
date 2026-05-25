@@ -130,17 +130,23 @@ def cadastrar_notebook():
 
     if RENDER:
 
-        from weasyprint import HTML
+        from xhtml2pdf import pisa
 
-        HTML(
+        with open(
 
-            string=html
+             pdf_path,
 
-        ).write_pdf(
+             "w+b"
 
-            pdf_path
+        ) as pdf:
 
-        )
+            pisa.CreatePDF(
+
+                html,
+
+                dest=pdf
+
+           )
 
     # =====================================================
     # ANEXAR PDF
@@ -278,10 +284,11 @@ Por segurança, será necessário validar seu CPF.
 
         server = smtplib.SMTP(
 
-            'smtp.gmail.com',
-            587
+             'smtp.gmail.com',
+              587,
+              timeout=10
 
-        )
+         )
 
         server.starttls()
 
