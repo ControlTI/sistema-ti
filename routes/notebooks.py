@@ -8,7 +8,6 @@ from flask import (
 
 import os
 import uuid
-import resend
 
 from werkzeug.utils import secure_filename
 from routes.models import db, Notebook
@@ -222,69 +221,6 @@ def cadastrar_notebook():
     db.session.add(novo)
 
     db.session.commit()
-
-    # =====================================================
-    # EMAIL
-    # =====================================================
-
-    try:
-    
-
-        resend.api_key = "re_UFjGthMv_EFbvtwRKdnreSQ72u7cRfY9R"
-
-        resend.Emails.send({
-
-            "from": "Sistema TI <onboarding@resend.dev>",
-
-            "to": request.form['email_destino'],
-
-            "subject": "Assinatura de Termo",
-
-            "html": f"""
-
-            <h2>
-
-            Assinatura de Termo
-
-            </h2>
-
-            <p>
-
-            Olá {novo.colaborador},
-
-            </p>
-
-            <p>
-
-            Clique abaixo para assinar:
-
-            </p>
-
-            <a href="https://sistema-ti-546b.onrender.com/carregando/{novo.token}">
-
-            ASSINAR TERMO
-
-            </a>
-
-            """
-
-        })
-
-        print(
-
-            'EMAIL ENVIADO'
-
-        )
-
-    except Exception as erro:
-
-        print(
-
-            'ERRO EMAIL:',
-
-            erro
-
-        )
         
     return redirect('/notebooks')
 
