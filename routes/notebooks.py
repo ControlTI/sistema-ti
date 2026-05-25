@@ -228,7 +228,7 @@ def cadastrar_notebook():
     # =====================================================
 
     try:
-    try:
+    
 
         resend.api_key = "re_UFjGthMv_EFbvtwRKdnreSQ72u7cRfY9R"
 
