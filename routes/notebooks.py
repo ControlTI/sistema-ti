@@ -6,13 +6,17 @@ from flask import (
     session
 )
 
-import smtplib
 import os
 import uuid
 
-from email.mime.text import MIMEText
 from werkzeug.utils import secure_filename
 from routes.models import db, Notebook
+
+# =====================================================
+# PDF
+# =====================================================
+
+from xhtml2pdf import pisa
 
 # =====================================================
 # PASTA UPLOADS
@@ -39,16 +43,6 @@ notebooks_bp = Blueprint(
 )
 
 # =====================================================
-# DETECTA RENDER
-# =====================================================
-
-RENDER = os.environ.get(
-
-    "RENDER"
-
-)
-
-# =====================================================
 # LISTAR
 # =====================================================
 
@@ -70,7 +64,7 @@ def notebooks():
     )
 
 # =====================================================
-# TELA CARREGANDO
+# CARREGANDO
 # =====================================================
 
 @notebooks_bp.route('/carregando/<token>')
@@ -106,7 +100,7 @@ def cadastrar_notebook():
     )
 
     # =====================================================
-    # GERAR TERMO PDF
+    # GERAR TERMO
     # =====================================================
 
     if tipo_termo == 'gerar':
@@ -141,12 +135,6 @@ def cadastrar_notebook():
             nome_arquivo
 
         )
-
-        # =====================================================
-        # GERA PDF
-        # =====================================================
-
-        from xhtml2pdf import pisa
 
         with open(
 
@@ -235,102 +223,8 @@ def cadastrar_notebook():
     db.session.commit()
 
     # =====================================================
-    # EMAIL
+    # SEM EMAIL TEMPORARIAMENTE
     # =====================================================
-
-    try:
-
-        msg = MIMEText(f"""
-
-<html>
-
-<body style="font-family:Arial;background:#f4f7fb;padding:30px;">
-
-<div style="background:white;border-radius:20px;padding:40px;max-width:600px;margin:auto;">
-
-<h2 style="color:#071b45;">
-
-Assinatura de Termo
-
-</h2>
-
-<p>
-
-Olá {novo.colaborador},
-
-</p>
-
-<p>
-
-Seu termo está disponível para assinatura digital.
-
-</p>
-
-<a
-
-href="https://sistema-ti-546b.onrender.com/carregando/{novo.token}"
-
-style="display:inline-block;margin-top:20px;background:#2563eb;color:white;text-decoration:none;padding:14px 24px;border-radius:12px;font-weight:bold;"
-
->
-
-ASSINAR TERMO
-
-</a>
-
-<p style="margin-top:30px;color:#6b7280;font-size:13px;">
-
-Por segurança, será necessário validar seu CPF.
-
-</p>
-
-</div>
-
-</body>
-
-</html>
-
-""", 'html')
-
-        msg['Subject'] = 'Assinatura de Termo'
-
-        msg['From'] = 'sistematiempresa@gmail.com'
-
-        msg['To'] = request.form['email_destino']
-
-        server = smtplib.SMTP(
-
-            'smtp.gmail.com',
-
-            587,
-
-            timeout=10
-
-        )
-
-        server.starttls()
-
-        server.login(
-
-            'sistematiempresa@gmail.com',
-
-            'iuiy wzgb mbcw lrju'
-
-        )
-
-        server.send_message(msg)
-
-        server.quit()
-
-    except Exception as erro:
-
-        print(
-
-            'ERRO EMAIL:',
-
-            erro
-
-        )
 
     return redirect('/notebooks')
 
