@@ -8,7 +8,9 @@ from flask import (
 
 import os
 import uuid
+import smtplib
 
+from email.mime.text import MIMEText
 from werkzeug.utils import secure_filename
 from routes.models import db, Notebook
 
@@ -223,8 +225,68 @@ def cadastrar_notebook():
     db.session.commit()
 
     # =====================================================
-    # SEM EMAIL TEMPORARIAMENTE
+    # EMAIL
     # =====================================================
+
+    try:
+
+        msg = MIMEText(f"""
+
+Olá {novo.colaborador},
+
+Seu termo está disponível para assinatura digital.
+
+Acesse o link abaixo:
+
+https://sistema-ti-546b.onrender.com/carregando/{novo.token}
+
+""")
+
+        msg['Subject'] = 'Assinatura de Termo'
+
+        msg['From'] = 'sistematiempresa@gmail.com'
+
+        msg['To'] = request.form['email_destino']
+
+        server = smtplib.SMTP(
+
+            'smtp.gmail.com',
+
+            587,
+
+            timeout=10
+
+        )
+
+        server.starttls()
+
+        server.login(
+
+            'sistematiempresa@gmail.com',
+
+            'COLOCA_SUA_SENHA_APP_AQUI'
+
+        )
+
+        server.send_message(msg)
+
+        server.quit()
+
+        print(
+
+            'EMAIL ENVIADO'
+
+        )
+
+    except Exception as erro:
+
+        print(
+
+            'ERRO EMAIL:',
+
+            erro
+
+        )
 
     return redirect('/notebooks')
 
