@@ -8,21 +8,19 @@ from flask import (
 )
 
 import sqlite3
+import os
 
 # =====================================================
 # SQLALCHEMY
 # =====================================================
 
-from database.models import db
-from database.models import Produto
-from database.models import Usuario
-from database.models import Movimentacao
-
-# =====================================================
-# ROTAS
-# =====================================================
-
-from routes.estoque import estoque_bp
+from routes.models import (
+    db,
+    Produto,
+    Usuario,
+    Movimentacao,
+    Notebook
+)
 
 # =====================================================
 # APP
@@ -36,9 +34,32 @@ app.secret_key = 'allied_sistema'
 # SQLALCHEMY CONFIG
 # =====================================================
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///sistema.db'
+BASE_DIR = os.path.abspath(
+    os.path.dirname(__file__)
+)
+
+app.config['SQLALCHEMY_DATABASE_URI'] = (
+    'sqlite:///' +
+    os.path.join(BASE_DIR, 'sistema.db')
+)
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+# =====================================================
+# UPLOADS
+# =====================================================
+
+UPLOAD_FOLDER = 'uploads'
+
+if not os.path.exists(UPLOAD_FOLDER):
+
+    os.makedirs(UPLOAD_FOLDER)
+
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
+# =====================================================
+# INIT DB
+# =====================================================
 
 db.init_app(app)
 
@@ -63,6 +84,7 @@ app.register_blueprint(estoque_bp)
 app.register_blueprint(entradas_bp)
 app.register_blueprint(saidas_bp)
 app.register_blueprint(notebooks_bp)
+
 # =====================================================
 # BANCO SQLITE
 # =====================================================
@@ -243,10 +265,27 @@ def home():
     return render_template('home.html')
 
 # =====================================================
-# START
+# UPLOADS
 # =====================================================
 
 @app.route('/uploads/<filename>')
+def uploads(filename):
+
+    return send_from_directory(
+        'uploads',
+        filename
+    )
+
+# =====================================================
+# START
+# =====================================================
+
+if __name__ == '__main__':
+
+    app.run(
+        debug=True
+    )
+@app.route('/uploads/<path:filename>')
 def uploads(filename):
 
     return send_from_directory(
@@ -255,10 +294,4 @@ def uploads(filename):
 
         filename
 
-    )
-
-if __name__ == '__main__':
-
-    app.run(
-        debug=True
     )

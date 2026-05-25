@@ -6,8 +6,7 @@ from flask import (
     session
 )
 
-from database.models import db
-from database.models import Saida
+from routes.models import db, Saida
 
 saidas_bp = Blueprint(
     'saidas',

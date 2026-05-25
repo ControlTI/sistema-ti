@@ -181,7 +181,119 @@
     </div>
 
     <iframe
-        src="/uploads/{{ notebook.termo }}"
+        {% if not liberado %}
+
+<form method="POST">
+
+    <div
+        style="
+            background:#f9fafb;
+            padding:30px;
+            border-radius:18px;
+            margin-top:20px;
+        "
+    >
+
+        <h3>
+
+            Validação de Segurança
+
+        </h3>
+
+        <p>
+
+            Digite seu CPF para acessar o termo.
+
+        </p>
+
+        <input
+            type="text"
+            name="cpf"
+            placeholder="Digite seu CPF"
+            required
+            style="
+                width:100%;
+                height:55px;
+                border:none;
+                border-radius:12px;
+                padding:0 18px;
+                margin-top:15px;
+                background:#eef2ff;
+                font-size:15px;
+            "
+        >
+
+        <button
+            type="submit"
+            class="btn-save"
+            style="margin-top:20px;"
+        >
+
+            Validar CPF
+
+        </button>
+
+    </div>
+
+</form>
+
+{% else %}
+
+<iframe
+    src="/uploads/{{ notebook.termo }}"
+></iframe>
+
+<div class="assinatura-box">
+
+    <h3>
+
+        Assine abaixo:
+
+    </h3>
+
+    <canvas id="signature-pad"></canvas>
+
+    <form
+        method="POST"
+        id="formAssinatura"
+        action="/salvar_assinatura/{{ notebook.id }}"
+    >
+
+        <input
+            type="hidden"
+            name="assinatura"
+            id="assinatura"
+        >
+
+        <div class="buttons">
+
+            <button
+                type="button"
+                class="btn-clear"
+                onclick="limparAssinatura()"
+            >
+
+                Limpar
+
+            </button>
+
+            <button
+                type="submit"
+                class="btn-save"
+            >
+
+                Assinar Documento
+
+            </button>
+
+        </div>
+
+    </form>
+
+</div>
+
+{% endif %}
+
     ></iframe>
 
     <div class="assinatura-box">

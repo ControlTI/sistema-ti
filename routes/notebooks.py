@@ -6,24 +6,40 @@ from flask import (
     session
 )
 
+import smtplib
+import os
+import uuid
+
+os.makedirs(
+
+    'uploads',
+
+    exist_ok=True
+
+)
+
+import uuid
+
+from email.mime.text import MIMEText
+
 from werkzeug.utils import secure_filename
 
-from database.models import db
-from database.models import Notebook
-
-import pdfkit
-import os
+from routes.models import db, Notebook
 
 notebooks_bp = Blueprint(
     'notebooks',
     __name__
 )
 
-UPLOAD_FOLDER = 'uploads'
+# =====================================================
+# DETECTA RENDER
+# =====================================================
 
-# =========================================================
-# LISTAR NOTEBOOKS
-# =========================================================
+RENDER = os.environ.get("RENDER")
+
+# =====================================================
+# LISTAR
+# =====================================================
 
 @notebooks_bp.route('/notebooks')
 def notebooks():
@@ -35,13 +51,31 @@ def notebooks():
     notebooks = Notebook.query.all()
 
     return render_template(
+
         'notebooks.html',
+
         notebooks=notebooks
+
     )
 
-# =========================================================
-# CADASTRAR NOTEBOOK
-# =========================================================
+# =====================================================
+# CARREGANDO
+# =====================================================
+
+@notebooks_bp.route('/carregando/<token>')
+def carregando(token):
+
+    return render_template(
+
+        'carregando.html',
+
+        token=token
+
+    )
+
+# =====================================================
+# CADASTRAR
+# =====================================================
 
 @notebooks_bp.route(
     '/cadastrar_notebook',
@@ -49,98 +83,98 @@ def notebooks():
 )
 def cadastrar_notebook():
 
-    termo = request.files['termo']
-
     nome_arquivo = ''
 
-    # =====================================================
-    # UPLOAD MANUAL
-    # =====================================================
+    tipo_termo = request.form.get(
 
-    if termo.filename != '':
+        'tipo_termo'
 
-        nome_arquivo = secure_filename(
-            termo.filename
-        )
-
-        termo.save(
-            os.path.join(
-                UPLOAD_FOLDER,
-                nome_arquivo
-            )
-        )
+    )
 
     # =====================================================
-    # GERAR TERMO AUTOMÁTICO
+    # GERAR TERMO
     # =====================================================
 
-    elif request.form.get('gerar_termo') == 'sim':
+    if tipo_termo == 'gerar':
 
         html = render_template(
 
             'termo.html',
 
             colaborador=request.form['colaborador'],
-
-            cpf=request.form['cpf'],
-
-            area=request.form['area'],
-
-            matricula=request.form['matricula'],
-
+            cpf=request.form.get('cpf'),
+            area=request.form.get('area'),
+            matricula=request.form.get('matricula'),
             notebook=request.form['notebook'],
-
             marca=request.form['marca'],
-
             modelo=request.form['modelo'],
-
-            processador=request.form['processador'],
-
             serial=request.form['serial'],
-
-            valor=request.form['valor'],
-
-            tecnico=session['nome'],
-
-            data=request.form['data'].split('-')[2] + '/' + request.form['data'].split('-')[1] + '/' + request.form['data'].split('-')[0]
+            valor=request.form.get('valor'),
+            data=request.form['data']
 
         )
 
-        config = pdfkit.configuration(
+        nome_arquivo = (
 
-            wkhtmltopdf=r'C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe'
+            f"TERMO_{uuid.uuid4().hex}.pdf"
 
         )
-
-        options = {
-
-            'enable-local-file-access': ''
-
-        }
-
-        nome_arquivo = f'TERMO_{request.form["colaborador"]}.pdf'
 
         pdf_path = os.path.join(
 
-            UPLOAD_FOLDER,
+            'uploads',
+
             nome_arquivo
 
         )
 
-        pdfkit.from_string(
+    if RENDER:
 
-            html,
-            pdf_path,
-            configuration=config,
-            options=options
+        from weasyprint import HTML
+
+        HTML(
+
+            string=html
+
+        ).write_pdf(
+
+            pdf_path
 
         )
 
     # =====================================================
-    # SALVAR BANCO
+    # ANEXAR PDF
+    # =====================================================
+
+    elif 'termo' in request.files:
+
+        arquivo = request.files['termo']
+
+        if arquivo.filename != '':
+
+            nome_arquivo = secure_filename(
+
+                arquivo.filename
+
+            )
+
+            caminho = os.path.join(
+
+                'uploads',
+
+                nome_arquivo
+
+            )
+
+            arquivo.save(caminho)
+
+    # =====================================================
+    # SALVAR
     # =====================================================
 
     novo = Notebook(
+
+        token=uuid.uuid4().hex,
 
         colaborador=request.form['colaborador'],
 
@@ -153,6 +187,14 @@ def cadastrar_notebook():
         processador=request.form['processador'],
 
         serial=request.form['serial'],
+
+        cpf=request.form.get('cpf'),
+
+        area=request.form.get('area'),
+
+        matricula=request.form.get('matricula'),
+
+        valor=request.form.get('valor'),
 
         status=request.form['status'],
 
@@ -170,28 +212,105 @@ def cadastrar_notebook():
 
     db.session.commit()
 
+    # =====================================================
+    # EMAIL AUTOMÁTICO
+    # =====================================================
+
+    try:
+
+        msg = MIMEText(f"""
+
+<html>
+
+<body style="font-family:Arial;background:#f4f7fb;padding:30px;">
+
+<div style="background:white;border-radius:20px;padding:40px;max-width:600px;margin:auto;">
+
+<h2 style="color:#071b45;">
+
+Assinatura de Termo
+
+</h2>
+
+<p>
+
+Olá {novo.colaborador},
+
+</p>
+
+<p>
+
+Seu termo está disponível para assinatura digital.
+
+</p>
+
+<a
+
+href="https://sistema-ti-546b.onrender.com/carregando/{novo.token}"
+
+style="display:inline-block;margin-top:20px;background:#2563eb;color:white;text-decoration:none;padding:14px 24px;border-radius:12px;font-weight:bold;"
+
+>
+
+ASSINAR TERMO
+
+</a>
+
+<p style="margin-top:30px;color:#6b7280;font-size:13px;">
+
+Por segurança, será necessário validar seu CPF.
+
+</p>
+
+</div>
+
+</body>
+
+</html>
+
+""", 'html')
+
+        msg['Subject'] = 'Assinatura de Termo'
+
+        msg['From'] = 'sistematiempresa@gmail.com'
+
+        msg['To'] = request.form['email_destino']
+
+        server = smtplib.SMTP(
+
+            'smtp.gmail.com',
+            587
+
+        )
+
+        server.starttls()
+
+        server.login(
+
+            'sistematiempresa@gmail.com',
+
+            'iuiy wzgb mbcw lrju'
+
+        )
+
+        server.send_message(msg)
+
+        server.quit()
+
+    except Exception as erro:
+
+        print(
+
+            'ERRO EMAIL:',
+            erro
+
+        )
+
     return redirect('/notebooks')
 
-# =========================================================
-# EXCLUIR NOTEBOOK
-# =========================================================
-
-@notebooks_bp.route('/excluir_notebook/<int:id>')
-def excluir_notebook(id):
-
-    notebook = Notebook.query.get(id)
-
-    if notebook:
-
-        db.session.delete(notebook)
-
-        db.session.commit()
-
-    return redirect('/notebooks')
-
-# =========================================================
-# EDITAR NOTEBOOK
-# =========================================================
+# =====================================================
+# EDITAR
+# =====================================================
 
 @notebooks_bp.route(
     '/editar_notebook/<int:id>',
@@ -199,7 +318,7 @@ def excluir_notebook(id):
 )
 def editar_notebook(id):
 
-    notebook = Notebook.query.get(id)
+    notebook = Notebook.query.get_or_404(id)
 
     if request.method == 'POST':
 
@@ -233,65 +352,87 @@ def editar_notebook(id):
 
     )
 
-import base64
+# =====================================================
+# EXCLUIR
+# =====================================================
+
+@notebooks_bp.route('/excluir_notebook/<int:id>')
+def excluir_notebook(id):
+
+    notebook = Notebook.query.get_or_404(id)
+
+    db.session.delete(notebook)
+
+    db.session.commit()
+
+    return redirect('/notebooks')
 
 # =====================================================
-# ASSINATURA DIGITAL
+# ASSINAR
 # =====================================================
 
 @notebooks_bp.route(
-
-    '/assinar/<int:id>',
-
+    '/assinar/<token>',
     methods=['GET', 'POST']
-
 )
-def assinar(id):
+def assinar(token):
 
-    notebook = Notebook.query.get(id)
+    notebook = Notebook.query.filter_by(
+        token=token
+    ).first_or_404()
+
+    liberado = False
 
     if request.method == 'POST':
 
-        assinatura = request.form['assinatura']
+        cpf_digitado = request.form['cpf']
 
-        assinatura = assinatura.split(',')[1]
+        cpf_limpo = cpf_digitado.replace(
+            '.', ''
+        ).replace(
+            '-', ''
+        )
 
-        caminho = f'static/assinaturas/{id}.png'
+        cpf_banco = notebook.cpf.replace(
+            '.', ''
+        ).replace(
+            '-', ''
+        )
 
-        with open(
+        if cpf_limpo == cpf_banco:
 
-            caminho,
-
-            'wb'
-
-        ) as f:
-
-            f.write(
-
-                base64.b64decode(assinatura)
-
-            )
-
-        notebook.assinatura = f'{id}.png'
-
-        notebook.status = 'Assinado'
-
-        db.session.commit()
-
-        return '''
-
-        <h1>
-
-            Documento assinado com sucesso.
-
-        </h1>
-
-        '''
+            liberado = True
 
     return render_template(
 
         'assinar.html',
 
-        notebook=notebook
+        notebook=notebook,
+
+        liberado=liberado
 
     )
+
+# =====================================================
+# SALVAR ASSINATURA
+# =====================================================
+
+@notebooks_bp.route(
+    '/salvar_assinatura/<int:id>',
+    methods=['POST']
+)
+def salvar_assinatura(id):
+
+    notebook = Notebook.query.get_or_404(id)
+
+    assinatura = request.form['assinatura']
+
+    notebook.assinatura = assinatura
+
+    db.session.commit()
+
+    return {
+
+        'status': 'ok'
+
+    }

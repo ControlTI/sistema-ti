@@ -236,6 +236,11 @@ class Notebook(db.Model):
         db.String(100)
     )
 
+    token = db.Column(
+    db.String(120),
+    unique=True
+
+    )
     notebook = db.Column(
         db.String(100)
     )
@@ -297,3 +302,4 @@ class Notebook(db.Model):
     observacoes = db.Column(
         db.Text
     )
+    

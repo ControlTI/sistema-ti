@@ -91,6 +91,8 @@
 
                 <td>
 
+                    {% if notebook.termo %}
+
                     <a
                         href="/uploads/{{ notebook.termo }}"
                         target="_blank"
@@ -100,9 +102,11 @@
 
                     </a>
 
+                    {% endif %}
+
                 </td>
 
-                <td>
+                <td class="acoes">
 
                     <a
                         href="/editar_notebook/{{ notebook.id }}"
@@ -119,6 +123,16 @@
                     >
 
                         🗑️
+
+                    </a>
+
+                    <a
+                        href="/assinar/{{ notebook.id }}"
+                        class="btn-sign"
+                        target="_blank"
+                    >
+
+                        ✍️
 
                     </a>
 
@@ -153,33 +167,13 @@
             method="POST"
             action="/cadastrar_notebook"
             enctype="multipart/form-data"
+            class="form-grid"
         >
 
             <input
                 type="text"
                 name="colaborador"
                 placeholder="Colaborador"
-                required
-            >
-
-            <input
-                type="text"
-                name="cpf"
-                placeholder="CPF"
-                required
-            >
-
-            <input
-                type="text"
-                name="area"
-                placeholder="Área"
-                required
-            >
-
-            <input
-                type="text"
-                name="matricula"
-                placeholder="Matrícula"
                 required
             >
 
@@ -215,13 +209,6 @@
                 type="text"
                 name="serial"
                 placeholder="Número de Série"
-                required
-            >
-
-            <input
-                type="text"
-                name="valor"
-                placeholder="Valor"
                 required
             >
 
@@ -263,35 +250,79 @@
 
             </select>
 
-            <div class="termo-actions">
+            <!-- ESCOLHA TERMO -->
 
-                <label class="upload-box">
+            <div class="tipo-termo">
 
-                    📄 Anexar Termo
+                <label>
 
                     <input
-                        type="file"
-                        name="termo"
-                        accept=".pdf"
-                        hidden
+                        type="radio"
+                        name="tipo_termo"
+                        value="gerar"
+                        checked
                     >
+
+                    Gerar Termo
 
                 </label>
 
-                <label class="generate-box">
+                <label>
 
                     <input
-                        type="checkbox"
-                        name="gerar_termo"
-                        value="sim"
-                        hidden
+                        type="radio"
+                        name="tipo_termo"
+                        value="anexar"
                     >
 
-                    ⚡ Gerar Termo
+                    Anexar PDF
 
                 </label>
 
             </div>
+
+            <!-- CAMPOS GERAR -->
+
+            <input
+                type="text"
+                name="cpf"
+                placeholder="CPF"
+            >
+
+            <input
+                type="text"
+                name="area"
+                placeholder="Área"
+            >
+
+            <input
+                type="text"
+                name="matricula"
+                placeholder="Matrícula"
+            >
+
+            <input
+                type="text"
+                name="valor"
+                placeholder="Valor"
+            >
+
+            <!-- PDF -->
+
+            <label class="upload-box">
+
+                📄 Selecionar PDF
+
+                <input
+                    type="file"
+                    name="termo"
+                    accept=".pdf"
+                    hidden
+                >
+
+            </label>
+
+            <!-- OBS -->
 
             <textarea
                 name="observacoes"
@@ -332,6 +363,94 @@ window.onclick = function(event){
     }
 
 }
+
+const radios = document.querySelectorAll(
+
+    'input[name="tipo_termo"]'
+
+);
+
+const pdfBox = document.querySelector(
+
+    '.upload-box'
+
+);
+
+const cpf = document.querySelector(
+
+    'input[name="cpf"]'
+
+);
+
+const area = document.querySelector(
+
+    'input[name="area"]'
+
+);
+
+const matricula = document.querySelector(
+
+    'input[name="matricula"]'
+
+);
+
+const valor = document.querySelector(
+
+    'input[name="valor"]'
+
+);
+
+function atualizarCampos(){
+
+    const tipo = document.querySelector(
+
+        'input[name="tipo_termo"]:checked'
+
+    ).value;
+
+    if(tipo === 'gerar'){
+
+        pdfBox.style.display = 'none';
+
+        cpf.style.display = 'block';
+
+        area.style.display = 'block';
+
+        matricula.style.display = 'block';
+
+        valor.style.display = 'block';
+
+    }
+
+    else{
+
+        pdfBox.style.display = 'flex';
+
+        cpf.style.display = 'none';
+
+        area.style.display = 'none';
+
+        matricula.style.display = 'none';
+
+        valor.style.display = 'none';
+
+    }
+
+}
+
+radios.forEach(radio => {
+
+    radio.addEventListener(
+
+        'change',
+
+        atualizarCampos
+
+    );
+
+});
+
+atualizarCampos();
 
 </script>
 

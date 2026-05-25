@@ -2,11 +2,11 @@ from flask import (
     Blueprint,
     render_template,
     request,
-    redirect
+    redirect,
+    session
 )
 
-from database.models import db
-from database.models import Entrada
+from routes.models import db, Entrada
 
 entradas_bp = Blueprint(
     'entradas',
@@ -20,6 +20,10 @@ entradas_bp = Blueprint(
 @entradas_bp.route('/entradas')
 def entradas():
 
+    if 'usuario' not in session:
+
+        return redirect('/')
+
     entradas = Entrada.query.all()
 
     return render_template(
@@ -29,7 +33,6 @@ def entradas():
         entradas=entradas
 
     )
-
 # =====================================================
 # CADASTRAR ENTRADA
 # =====================================================

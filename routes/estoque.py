@@ -6,8 +6,7 @@ from flask import (
     session
 )
 
-from database.models import db
-from database.models import Produto
+from routes.models import db, Produto
 
 estoque_bp = Blueprint(
     'estoque',
