@@ -10,6 +10,14 @@ import smtplib
 import os
 import uuid
 
+from email.mime.text import MIMEText
+from werkzeug.utils import secure_filename
+from routes.models import db, Notebook
+
+# =====================================================
+# PASTA UPLOADS
+# =====================================================
+
 os.makedirs(
 
     'uploads',
@@ -18,24 +26,27 @@ os.makedirs(
 
 )
 
-import uuid
-
-from email.mime.text import MIMEText
-
-from werkzeug.utils import secure_filename
-
-from routes.models import db, Notebook
+# =====================================================
+# BLUEPRINT
+# =====================================================
 
 notebooks_bp = Blueprint(
+
     'notebooks',
+
     __name__
+
 )
 
 # =====================================================
 # DETECTA RENDER
 # =====================================================
 
-RENDER = os.environ.get("RENDER")
+RENDER = os.environ.get(
+
+    "RENDER"
+
+)
 
 # =====================================================
 # LISTAR
@@ -59,7 +70,7 @@ def notebooks():
     )
 
 # =====================================================
-# CARREGANDO
+# TELA CARREGANDO
 # =====================================================
 
 @notebooks_bp.route('/carregando/<token>')
@@ -74,12 +85,15 @@ def carregando(token):
     )
 
 # =====================================================
-# CADASTRAR
+# CADASTRAR NOTEBOOK
 # =====================================================
 
 @notebooks_bp.route(
+
     '/cadastrar_notebook',
+
     methods=['POST']
+
 )
 def cadastrar_notebook():
 
@@ -92,7 +106,7 @@ def cadastrar_notebook():
     )
 
     # =====================================================
-    # GERAR TERMO
+    # GERAR TERMO PDF
     # =====================================================
 
     if tipo_termo == 'gerar':
@@ -128,15 +142,17 @@ def cadastrar_notebook():
 
         )
 
-    if RENDER:
+        # =====================================================
+        # GERA PDF
+        # =====================================================
 
         from xhtml2pdf import pisa
 
         with open(
 
-             pdf_path,
+            pdf_path,
 
-             "w+b"
+            "w+b"
 
         ) as pdf:
 
@@ -146,7 +162,7 @@ def cadastrar_notebook():
 
                 dest=pdf
 
-           )
+            )
 
     # =====================================================
     # ANEXAR PDF
@@ -175,7 +191,7 @@ def cadastrar_notebook():
             arquivo.save(caminho)
 
     # =====================================================
-    # SALVAR
+    # SALVAR NOTEBOOK
     # =====================================================
 
     novo = Notebook(
@@ -219,7 +235,7 @@ def cadastrar_notebook():
     db.session.commit()
 
     # =====================================================
-    # EMAIL AUTOMÁTICO
+    # EMAIL
     # =====================================================
 
     try:
@@ -284,11 +300,13 @@ Por segurança, será necessário validar seu CPF.
 
         server = smtplib.SMTP(
 
-             'smtp.gmail.com',
-              587,
-              timeout=10
+            'smtp.gmail.com',
 
-         )
+            587,
+
+            timeout=10
+
+        )
 
         server.starttls()
 
@@ -309,6 +327,7 @@ Por segurança, será necessário validar seu CPF.
         print(
 
             'ERRO EMAIL:',
+
             erro
 
         )
@@ -320,8 +339,11 @@ Por segurança, será necessário validar seu CPF.
 # =====================================================
 
 @notebooks_bp.route(
+
     '/editar_notebook/<int:id>',
+
     methods=['GET', 'POST']
+
 )
 def editar_notebook(id):
 
@@ -379,13 +401,18 @@ def excluir_notebook(id):
 # =====================================================
 
 @notebooks_bp.route(
+
     '/assinar/<token>',
+
     methods=['GET', 'POST']
+
 )
 def assinar(token):
 
     notebook = Notebook.query.filter_by(
+
         token=token
+
     ).first_or_404()
 
     liberado = False
@@ -395,15 +422,31 @@ def assinar(token):
         cpf_digitado = request.form['cpf']
 
         cpf_limpo = cpf_digitado.replace(
-            '.', ''
+
+            '.',
+
+            ''
+
         ).replace(
-            '-', ''
+
+            '-',
+
+            ''
+
         )
 
         cpf_banco = notebook.cpf.replace(
-            '.', ''
+
+            '.',
+
+            ''
+
         ).replace(
-            '-', ''
+
+            '-',
+
+            ''
+
         )
 
         if cpf_limpo == cpf_banco:
@@ -425,8 +468,11 @@ def assinar(token):
 # =====================================================
 
 @notebooks_bp.route(
+
     '/salvar_assinatura/<int:id>',
+
     methods=['POST']
+
 )
 def salvar_assinatura(id):
 
