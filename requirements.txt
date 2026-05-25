@@ -37,7 +37,6 @@ pypdf==6.12.1
 pyphen==0.17.2
 python-bidi==0.6.10
 pytz==2026.2
-pywin32==311
 PyYAML==6.0.3
 reportlab==4.5.1
 requests==2.34.2
