@@ -8,9 +8,8 @@ from flask import (
 
 import os
 import uuid
-import smtplib
+import resend
 
-from email.mime.text import MIMEText
 from werkzeug.utils import secure_filename
 from routes.models import db, Notebook
 
@@ -229,48 +228,47 @@ def cadastrar_notebook():
     # =====================================================
 
     try:
+    try:
 
-        msg = MIMEText(f"""
+        resend.api_key = "re_UFjGthMv_EFbvtwRKdnreSQ72u7cRfY9R"
 
-Olá {novo.colaborador},
+        resend.Emails.send({
 
-Seu termo está disponível para assinatura digital.
+            "from": "Sistema TI <onboarding@resend.dev>",
 
-Acesse o link abaixo:
+            "to": request.form['email_destino'],
 
-https://sistema-ti-546b.onrender.com/carregando/{novo.token}
+            "subject": "Assinatura de Termo",
 
-""")
+            "html": f"""
 
-        msg['Subject'] = 'Assinatura de Termo'
+            <h2>
 
-        msg['From'] = 'sistematiempresa@gmail.com'
+            Assinatura de Termo
 
-        msg['To'] = request.form['email_destino']
+            </h2>
 
-        server = smtplib.SMTP(
+            <p>
 
-            'smtp.gmail.com',
+            Olá {novo.colaborador},
 
-            587,
+            </p>
 
-            timeout=10
+            <p>
 
-        )
+            Clique abaixo para assinar:
 
-        server.starttls()
+            </p>
 
-        server.login(
+            <a href="https://sistema-ti-546b.onrender.com/carregando/{novo.token}">
 
-            'sistematiempresa@gmail.com',
+            ASSINAR TERMO
 
-            'COLOCA_SUA_SENHA_APP_AQUI'
+            </a>
 
-        )
+            """
 
-        server.send_message(msg)
-
-        server.quit()
+        })
 
         print(
 
@@ -287,7 +285,7 @@ https://sistema-ti-546b.onrender.com/carregando/{novo.token}
             erro
 
         )
-
+        
     return redirect('/notebooks')
 
 # =====================================================
