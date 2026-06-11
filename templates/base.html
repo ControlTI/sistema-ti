@@ -41,72 +41,56 @@
                     href="/home"
                     class="menu-link"
                 >
-
                     🏠 Início
+                </a>
 
+                <a
+                    href="/notebooks"
+                    class="menu-link"
+                >
+                    💻 Notebooks
                 </a>
 
                 <a
                     href="/estoque"
-                    class="menu-link active"
+                    class="menu-link"
                 >
-
                     📦 Estoque
+                </a>
 
+                <a
+                    href="/termo"
+                    class="menu-link"
+                >
+                    📄 Termos
                 </a>
 
                 <a
                     href="#"
                     class="menu-link"
                 >
-
-                    💻 Notebooks
-
-                </a>
-
-                <a
-                    href="#"
-                    class="menu-link"
-                >
-
                     🚚 Fornecedores
-
                 </a>
 
                 <a
                     href="#"
                     class="menu-link"
                 >
-
                     📊 Dashboard
-
                 </a>
 
                 <a
                     href="#"
                     class="menu-link"
                 >
-
-                    📄 Relatórios
-
-                </a>
-
-                <a
-                    href="#"
-                    class="menu-link"
-                >
-
                     👤 Usuários
-
                 </a>
 
                 <a
                     href="#"
                     class="menu-link"
                 >
-
                     ⚙️ Configurações
-
                 </a>
 
             </div>
@@ -125,13 +109,13 @@
 
                 <div class="user-name">
 
-                    Brenda
+                    {{ session['nome'] }}
 
                 </div>
 
                 <div class="user-level">
 
-                    Admin
+                    {{ session['nivel'] }}
 
                 </div>
 
@@ -153,5 +137,3 @@
     </div>
 
 </body>
-
-</html>
